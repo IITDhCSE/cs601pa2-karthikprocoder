@@ -1,21 +1,44 @@
-# Compiler and flags
 CXX = g++
-CXXFLAGS = -std=c++20 -Wall
 
-# Source files
-SRC = main.cpp
+EIGEN_PATH = /home/resiliente/cs601software/eigen-3.3.9
 
-# Executable name
-TARGET = main
 
 # Variables for prob and N
-PROB = 1
-N = 8
+PROB ?= 1
+N ?= 2
+E := 70
+A := 12.5e-4
+L := 0.5
+P := 5000
 
-all: $(TARGET)
 
-$(TARGET): $(SRC)
-	$(CXX) $(CXXFLAGS) -DPROB=$(PROB) -DN=$(N) -o $@ $^
+CXXFLAGS = -Wall -std=c++11 -DPROB=$(PROB) -DNUM_ELE=$(N)
+INC_DIR = inc
+SRC_DIR = src
+OBJ_DIR = obj
+BIN_DIR = bin
+
+PROG_NAME = $(BIN_DIR)/FEM
+
+# Default target
+run: $(PROG_NAME)
+	./$(PROG_NAME) $(E) $(A) $(L) $(P)
+
+compile: $(PROG_NAME)
+
+# Rule to link object files into the executable
+$(PROG_NAME): $(OBJ_DIR)/main.o $(OBJ_DIR)/Solution.o $(OBJ_DIR)/Domain.o $(OBJ_DIR)/Element.o 
+	$(CXX) $(CXXFLAGS) $^ -o $@
+
+# Rule to compile each source file into an object file
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp | $(OBJ_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+	
+# Create obj and bin directories if they don't exist
+$(OBJ_DIR) $(BIN_DIR):
+	mkdir -p $@
 
 clean:
-	rm -f $(TARGET)
+	rm -rf $(OBJ_DIR) $(BIN_DIR)
+
+.PHONY: clean
