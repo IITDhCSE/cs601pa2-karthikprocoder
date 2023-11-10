@@ -39,10 +39,11 @@ void Solution<T>::generate_global_stiffness_matrix() {
     for(int i = 0; i < dom.get_N(); i++) {
         /* first set the stiffness matrix for ith element */
         Element<T> element = this->dom.get_element(i);
+        printf("prob: %d\n", prob);
         if(this->prob == 1) 
-            element.set_stiffness_matrix(dom.get_E(), dom.get_A(), dom.get_L());
+            element.set_stiffness_matrix(dom.get_E(), dom.get_A());
         else if(prob == 2)
-            element.set_stiffness_matrix(dom.get_E(), dom.get_A() * (1 + i), dom.get_L());
+            element.set_stiffness_matrix(dom.get_E(), dom.get_A() * (1 + i / T(dom.get_N())));
         
         // printf("\nvalue: %f", element.stiffness_matrix_cell(0,0));
         /* use this to find the global stiffness matrix */
@@ -100,9 +101,9 @@ void Solution<T>::solve() {
 
 template<class T>
 void Solution<T>::show_matrices() const {
-    // std::cout << "GLOBAL STIFFNESS MATRIX:\n" << this->global_stiffness_matrix << "\n\n";
+    std::cout << "GLOBAL STIFFNESS MATRIX:\n" << this->global_stiffness_matrix << "\n\n";
     // std::cout << "FORCE VECTOR:\n" << this->force_vector << "\n\n";
-    std::cout << "\nDISPLACEMENT VECTOR:\n" << Eigen::Transpose(this->displacement_vector) << std::endl;
+    std::cout << "\nDISPLACEMENT VECTOR:\n" << (this->displacement_vector) << std::endl;
 }
 
 template<class T>

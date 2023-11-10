@@ -6,8 +6,8 @@ class Element {
 public:
 Element();
 Element(T length, int n);
-T gauss_quad(T E, T A, T L);
-void set_stiffness_matrix(T E, T A, T L);
+T gauss_quad(T E, T A);
+void set_stiffness_matrix(T E, T A);
 T stiffness_matrix_cell(int i, int j) const;
 ~Element();
 
@@ -28,15 +28,15 @@ Element<T>::Element(T length, int n) {
 }
 
 template<class T>
-T Element<T>::gauss_quad(T E, T A, T L) {
+T Element<T>::gauss_quad(T E, T A) {
     // one point gauss_quad
-    return E * A / L;
+    return E * A / length;
 }
 template<class T>
-void Element<T>::set_stiffness_matrix(T E, T A, T L) {
+void Element<T>::set_stiffness_matrix(T E, T A) {
     for(int i = 0; i < this->num_of_nodes; i++) 
         for(int j = 0; j < this->num_of_nodes; j++)    
-            this->stiffness_matrix(i, j) = gauss_quad(E, A, L) * ((i + j) % 2 ? -1 : 1);
+            this->stiffness_matrix(i, j) = gauss_quad(E, A) * ((i + j) % 2 ? -1 : 1);
 }
 template<class T>
 T Element<T>::stiffness_matrix_cell(int i, int j) const {
