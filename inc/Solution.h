@@ -1,7 +1,6 @@
 #include "Domain.h"
 #include <Eigen/Dense>
 using namespace Eigen;
-/* include path: /home/resiliente/cs601software/eigen-3.3.9 */
 
 template<class T>
 class Solution {
@@ -10,7 +9,7 @@ public:
     void generate_global_stiffness_matrix();
     void generate_force_vector();
     void solve();
-    void show_matrices() const;
+    void show_displacement_vector() const;
     ~Solution();
 
 private:
@@ -39,7 +38,7 @@ void Solution<T>::generate_global_stiffness_matrix() {
     for(int i = 0; i < dom.get_N(); i++) {
         /* first set the stiffness matrix for ith element */
         Element<T> element = this->dom.get_element(i);
-        printf("prob: %d\n", prob);
+        // printf("prob: %d\n", prob);
         if(this->prob == 1) 
             element.set_stiffness_matrix(dom.get_E(), dom.get_A());
         else if(prob == 2)
@@ -54,56 +53,32 @@ void Solution<T>::generate_global_stiffness_matrix() {
     }
 }
 
+/* For compression force at x = 0 */
 template<class T>
 void Solution<T>::generate_force_vector() {
     this->force_vector(0, 0) = this->load;
     this->force_vector(dom.nodes_count() - 1, 0) = -this->load;
 }
 
+/* finds the displacement vector */
+/* For the given problem, it is not difficult to solve the system of linear equations */
 template<class T>
 void Solution<T>::solve() {
     this->generate_global_stiffness_matrix();
     this->generate_force_vector();
     int dim = this->displacement_vector.rows();
     /* boundary condition : u = 0 at x = L */
-    
-    // solution with inverse
-    // this->displacement_vector = this->global_stiffness_matrix.completeOrthogonalDecomposition().pseudoInverse() * (this->force_vector);
-    // int i = dom.nodes_count() - 1;
-    // T u = this->displacement_vector(i);
-    // this->displacement_vector(i--) = 0;
-    // for( ; i >= 0; i--) {
-    //     this->displacement_vector(i) -= u;
-    // }    
-
-    // printf("values of disp vector with inverse\n");
-    // for (int i = 0 ; i < dim ; i++) {
-    //     std::printf("%f \n", displacement_vector(i, 0));
-    // }
-    // printf("\n");
-
-    // linear time solution
-    displacement_vector(dim-1, 0) = 0 ; // boundary
+    displacement_vector(dim-1, 0) = 0 ;
     displacement_vector(dim-2, 0) = (this->force_vector(dim-1, 0) - 0)/ this->global_stiffness_matrix(dim-1, dim-2); 
 
     for (int i = this->displacement_vector.rows()-2; i > 0 ; i--) {
-        // this->global_stiffness_matrix(i,i-1)*displacement_vector(i-1, 0) + this->global_stiffness_matrix(i, i) * displacement_vector(i, 0) + this->global_stiffness_matrix(i, i+1)*this->displacement_vector(i+1) = this->force_vector(i, 0);
-        // rearranging above 
         displacement_vector(i-1, 0) =(  this->force_vector(i, 0) - this->global_stiffness_matrix(i, i) * displacement_vector(i, 0) - this->global_stiffness_matrix(i, i+1)*this->displacement_vector(i+1)) / this->global_stiffness_matrix(i,i-1); 
     }
-
-    // printf("values of disp vector linear soluntion\n");
-    // for (int i = 0 ; i < dim ; i++) {
-    //     std::printf("%f \n", displacement_vector(i, 0));
-    // }
-    // printf("\n");
 }
 
 template<class T>
-void Solution<T>::show_matrices() const {
-    std::cout << "GLOBAL STIFFNESS MATRIX:\n" << this->global_stiffness_matrix << "\n\n";
-    // std::cout << "FORCE VECTOR:\n" << this->force_vector << "\n\n";
-    std::cout << "\nDISPLACEMENT VECTOR:\n" << (this->displacement_vector) << std::endl;
+void Solution<T>::show_displacement_vector() const {
+    std::cout << "\nDISPLACEMENT VECTOR:\n" << this->displacement_vector << std::endl;
 }
 
 template<class T>

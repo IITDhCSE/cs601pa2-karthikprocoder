@@ -33,15 +33,14 @@ int main(int argc, char* argv[]) {
     L = std::stod(argv[3]);
     P = std::stod(argv[4]);
 
-    // std::cout << "N: " << N << " E: " << E << " A: " << A << " L: " << L << " P: " << P << std::endl;
     Domain<double> dom(N, E, A, L);
     Solution<double> sol(dom, P, prob);
     sol.solve();
     
     end = clock();
     double time_taken = double(end - start) / double(CLOCKS_PER_SEC);
-    std::cout << "Execution Time : "<< time_taken << " sec " << std::endl;
-    
-    sol.show_matrices();
+    // sol.show_displacement_vector();
+
+    std::cout << "\nExecution Time : "<< time_taken << " sec " << std::endl;
     return 0;
 }

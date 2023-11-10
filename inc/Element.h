@@ -27,17 +27,20 @@ Element<T>::Element(T length, int n) {
     stiffness_matrix = Matrix<T, Dynamic, Dynamic>::Zero(n, n);
 }
 
+/* one point gauss quadrature */
 template<class T>
 T Element<T>::gauss_quad(T E, T A) {
-    // one point gauss_quad
     return E * A / length;
 }
+
 template<class T>
 void Element<T>::set_stiffness_matrix(T E, T A) {
     for(int i = 0; i < this->num_of_nodes; i++) 
         for(int j = 0; j < this->num_of_nodes; j++)    
             this->stiffness_matrix(i, j) = gauss_quad(E, A) * ((i + j) % 2 ? -1 : 1);
 }
+
+/* returns Kij */
 template<class T>
 T Element<T>::stiffness_matrix_cell(int i, int j) const {
     return this->stiffness_matrix(i, j);
