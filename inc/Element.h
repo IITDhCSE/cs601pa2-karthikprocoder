@@ -18,13 +18,10 @@ private:
 };
 
 template<class T>
-Element<T>::Element() {
-    printf("\nELEMENT DEFAULT CONSTRUCTOR CALLED");
-}
+Element<T>::Element() {}
 
 template<class T>
 Element<T>::Element(T length, int n) {
-    printf("\nELEMENT CONSTRUCTOR CALLED");
     this->length = length;
     this->num_of_nodes = n;
     stiffness_matrix = Matrix<T, Dynamic, Dynamic>::Zero(n, n);
@@ -47,6 +44,4 @@ T Element<T>::stiffness_matrix_cell(int i, int j) const {
 }
 
 template<class T>
-Element<T>::~Element() {
-    printf("\nELEMENT DESTRUCTOR CALLED");
-}
+Element<T>::~Element() {}

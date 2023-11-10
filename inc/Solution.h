@@ -25,16 +25,12 @@ private:
 
 template<class T>
 Solution<T>::Solution(const Domain<T>& dom, T load, int prob) {
-    printf("\ntest\n");
     this->dom = dom;
     this->load = load;
     this->prob = prob;
     int n = dom.nodes_count();
-    printf("\nnodes count: %d\n", n);
     this->global_stiffness_matrix = Matrix<T, Dynamic, Dynamic>::Zero(n, n); // all values = 0
-    printf("PASSED\n");
     this->force_vector = this->displacement_vector = Matrix<T, Dynamic, 1>::Zero(n, 1);
-    printf("PASSED\n");
 
 }
 
@@ -42,7 +38,6 @@ template<class T>
 void Solution<T>::generate_global_stiffness_matrix() {
     for(int i = 0; i < dom.get_N(); i++) {
         /* first set the stiffness matrix for ith element */
-        printf("\ngenerating global stiffness matrix\n");
         Element<T> element = this->dom.get_element(i);
         if(this->prob == 1) 
             element.set_stiffness_matrix(dom.get_E(), dom.get_A(), dom.get_L());
@@ -55,17 +50,13 @@ void Solution<T>::generate_global_stiffness_matrix() {
         this->global_stiffness_matrix(i, i + 1)     += element.stiffness_matrix_cell(0, 1);
         this->global_stiffness_matrix(i + 1, i)     += element.stiffness_matrix_cell(1, 0);
         this->global_stiffness_matrix(i + 1, i + 1) += element.stiffness_matrix_cell(1, 1);
-
-        printf("\nend\n");
     }
 }
 
 template<class T>
 void Solution<T>::generate_force_vector() {
-    printf("\ncalculating force vector\n");
-    this->force_vector(0, 0) = this->load;
-    this->force_vector(dom.nodes_count() - 1, 0) = -this->load;
-    printf("\nforce vector: \n");
+    this->force_vector(0, 0) = -this->load;
+    this->force_vector(dom.nodes_count() - 1, 0) = this->load;
 }
 
 template<class T>
@@ -73,7 +64,23 @@ void Solution<T>::solve() {
     this->generate_global_stiffness_matrix();
     this->generate_force_vector();
     this->displacement_vector = this->global_stiffness_matrix.completeOrthogonalDecomposition().pseudoInverse() * (this->force_vector);
-    printf("calculated disp vec\n");
+
+    /* boundary condition : u = 0 at x = L */
+    int i = dom.nodes_count() - 1;
+    T u = this->displacement_vector(i);
+    this->displacement_vector(i--) = 0;
+    for( ; i >= 0; i--) {
+        this->displacement_vector(i) -= u;
+    }    
+
+
+    // TODO:
+    // solve disp vector through loop here
+    // displacement_vector(i, this->displacement_vector.rows()-1) = 0 ; // boundary 
+    // for (int i = this->displacement_vector.rows()-2; i >= 0 ; i--) {
+    //         std::printf("%f ", displacement_vector(i, 0));
+    //         displacement_vector(i, 0) = displacement_vector(i+1, 0); // calculations here 
+    // }
 }
 
 template<class T>

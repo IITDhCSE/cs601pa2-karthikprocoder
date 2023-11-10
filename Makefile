@@ -6,7 +6,7 @@ EIGEN_PATH = /home/resiliente/cs601software/eigen-3.3.9
 # Variables for prob and N
 PROB ?= 
 N ?= 
-E := 70
+E := 70e9
 A := 12.5e-4
 L := 0.5
 P := 5000
@@ -22,7 +22,7 @@ BIN_DIR = bin
 PROG_NAME = $(BIN_DIR)/FEM
 
 # Default target
-run: $(PROG_NAME)
+run: clean $(PROG_NAME)
 	./$(PROG_NAME) $(E) $(A) $(L) $(P)
 
 compile: $(PROG_NAME)

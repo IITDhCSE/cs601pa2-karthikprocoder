@@ -28,7 +28,7 @@ int main(int argc, char* argv[]) {
     L = std::stod(argv[3]);
     P = std::stod(argv[4]);
 
-    std::cout << "N: " << N << " E: " << E << " A: " << A << " L: " << L << " P: " << P << std::endl;
+    // std::cout << "N: " << N << " E: " << E << " A: " << A << " L: " << L << " P: " << P << std::endl;
     Domain<double> dom(N, E, A, L);
     Solution<double> sol(dom, P, prob);
     sol.solve();

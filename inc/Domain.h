@@ -20,13 +20,10 @@ private:
 };
 
 template<class T>
-Domain<T>::Domain() {
-    printf("\nDOMAIN DEFAULT CONSTRUCTOR CALLED");
-}
+Domain<T>::Domain() {}
 
 template<class T>
 Domain<T>::Domain(int N, T E, T A, T L) {
-    printf("\nDOMAIN CONSTRUCTOR CALLED");
     this->N = N;
     this->E = E;
     this->A = A;
@@ -61,7 +58,4 @@ T Domain<T>::get_L() const {
     return this->L;
 }
 template<class T>
-Domain<T>::~Domain() {
-    printf("\nDOMAIN DESTRUCTOR CALLED");
-    // delete[] this->elements;
-}
+Domain<T>::~Domain() {}
