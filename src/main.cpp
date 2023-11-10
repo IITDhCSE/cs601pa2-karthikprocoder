@@ -1,7 +1,12 @@
 #include<iostream>
 #include "Solution.h"
+#include "time.h"
 
 int main(int argc, char* argv[]) {
+    
+    clock_t start, end;
+    start = clock(); 
+    
     if(argc != 5) {
         std::cerr << "E, A, L, P" << std::endl;
         exit(1);
@@ -32,6 +37,11 @@ int main(int argc, char* argv[]) {
     Domain<double> dom(N, E, A, L);
     Solution<double> sol(dom, P, prob);
     sol.solve();
+    
+    end = clock();
+    double time_taken = double(end - start) / double(CLOCKS_PER_SEC);
+    std::cout << "Execution Time : "<< time_taken << " sec " << std::endl;
+    
     sol.show_matrices();
     return 0;
 }
