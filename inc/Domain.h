@@ -1,11 +1,12 @@
 #include "Element.h"
+#include <vector>
 
 template<class T>
 class Domain {
 public:
     Domain();
     Domain(int N, T E, T A, T L);
-    Element<T>& get_element(int i) const;
+    Element<T> get_element(int i) const;
     int get_N() const;
     int nodes_count() const;
     T get_E() const;
@@ -15,27 +16,26 @@ public:
 private:
     int N; // number of elements
     T E, A, L;
-    Element<T>* elements;
+    std::vector<Element<T>> elements;
 };
 
 template<class T>
-Domain<T>::Domain() {}
+Domain<T>::Domain() {
+    printf("\nDOMAIN DEFAULT CONSTRUCTOR CALLED");
+}
 
 template<class T>
 Domain<T>::Domain(int N, T E, T A, T L) {
+    printf("\nDOMAIN CONSTRUCTOR CALLED");
     this->N = N;
     this->E = E;
     this->A = A;
     this->L = L;
-    this->elements = new Element<T>[N];
-
-    for(int i = 0; i < N; i++) {
-        this->elements[i] = Element<T>(L / N, 2);
-    }
+    this->elements.resize(N, Element<T>(L / N, 2));
 }
 
 template<class T>
-Element<T>& Domain<T>::get_element(int i) const {
+Element<T> Domain<T>::get_element(int i) const {
     return this->elements[i];
 }
 
@@ -62,5 +62,6 @@ T Domain<T>::get_L() const {
 }
 template<class T>
 Domain<T>::~Domain() {
-    delete[] this->elements;
+    printf("\nDOMAIN DESTRUCTOR CALLED");
+    // delete[] this->elements;
 }

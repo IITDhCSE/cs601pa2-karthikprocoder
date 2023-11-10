@@ -32,6 +32,6 @@ int main(int argc, char* argv[]) {
     Domain<double> dom(N, E, A, L);
     Solution<double> sol(dom, P, prob);
     sol.solve();
-    // sol.show_matrices();
+    sol.show_matrices();
     return 0;
 }
