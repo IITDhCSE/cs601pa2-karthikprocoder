@@ -22,7 +22,7 @@ BIN_DIR = bin
 PROG_NAME = $(BIN_DIR)/FEM
 
 # Default target
-run: clean $(PROG_NAME)
+run: check clean $(PROG_NAME)
 	./$(PROG_NAME) $(E) $(A) $(L) $(P)
 
 $(PROG_NAME): $(OBJ_DIR)/main.o
@@ -31,10 +31,9 @@ $(PROG_NAME): $(OBJ_DIR)/main.o
 $(OBJ_DIR)/main.o: $(SRC_DIR)/main.cpp $(INC_DIR)/Solution.h $(INC_DIR)/Domain.h $(INC_DIR)/Element.h 
 	$(CXX) $(CXXFLAGS) -I $(INC_DIR)/ -I $(EIGEN_PATH) -c $< -o $@
 	
-# Create obj and bin directories if they don't exist
-$(OBJ_DIR) $(BIN_DIR):
-	mkdir -p $@
-
+check:
+	if [ ! -d $(BIN_DIR) ]; then mkdir $(BIN_DIR); fi
+	if [ ! -d $(OBJ_DIR) ]; then mkdir $(OBJ_DIR); fi
 team:
 	@echo Team Members:
 	@echo 210010015 - Divy Jain
