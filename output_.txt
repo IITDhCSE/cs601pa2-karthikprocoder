@@ -1,0 +1,9 @@
+Commit ID tagged for submission: 4285adb729077585974ae060073f026e248682f2
+Submission graded at: 2023-11-20 06:29:40
+
+penalty:0.25
+grade:7.25
+- the way you have defined Element implies that this is hardcoded for 1D problem. Think of how many parts of the code that you need to change if this were a 2D Element?
+- Comments are good. Excellent application of OO design. Makefile is ok.
+- Force at X_L is zero. You have it as -5000. (-0.25)
+0.25
